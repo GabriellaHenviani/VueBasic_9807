@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="vue.js"></script>
+
+    <style>
+        body {
+            background-color: rgb(140, 190, 240);
+        }
+        .container {
+            width: 30%;
+            margin: auto;
+            margin-top: 10%;
+            padding: 40px 60px;
+            background-color: white;
+            text-align: center;
+        }
+        h1 {
+            color: rgb(15, 63, 110);
+            margin-bottom: 20px;
+        }
+        .row {
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .footer {
+            display: inline-block;
+            position: fixed;
+            bottom: 0;
+            background-color: rgb(7, 33, 59);
+            color: white;
+            width: 100%;
+        }
+        .footer p {
+            font-size: 16px;
+            text-align: center;
+            padding-top: 10px;
+        }
+    </style>
+
+    <title>Unguided</title>
+    
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>Tebak angka antara 1-10</h1>
+            <div class="row">
+                <input v-model="input" placeholder="Masukkan angka" type="text" class="form-control" :disabled="disabled == 1">
+            </div>
+            <div class="row">
+                <button @click="cekAngka" class="btn btn-primary" :disabled="disabled == 1">Tebak</button>
+            </div>
+            <span v-if="show">
+                <span v-if="input == angkaRandom">
+                    <h4>Kamu menang! Kamu telah menggunakan {{ tebakan }} kesempatan.</h4>
+                    <h4>Jawabannya adalah {{ angkaRandom }}</h4>
+                </span>
+                <span v-else-if="tebakan >= maxTebakan">
+                    <h4>Kamu kalah!</h4>
+                    <h4>Jawabannya adalah {{ angkaRandom }}</h4>
+                </span>
+                <span v-else>
+                    <h4>Jawabanmu salah! Kamu memiliki {{ (maxTebakan-tebakan) }} kesempatan lagi.</h4>
+                </span>
+                <div class="row">
+                    <button @click="tebakLagi" class="btn btn-primary">{{ btnTebakLagi }}</button>
+                </div>
+            </span>
+            
+        </div>
+        <div class="footer">
+            <p>{{ mahasiswa.nama }} | {{ mahasiswa.NPM }} | {{ mahasiswa.kelas }}</p> 
+        </div>
+    </div>
+    <script>
+        const app = new Vue({
+            el: "#app",
+            data: {
+                max: 10,
+                min: 1,
+                angkaRandom: 0,
+                tebakan: 0,
+                maxTebakan: 3,
+                disabled: 0,
+                input: null,
+                show: null,
+                btnTebakLagi: 'Tebak lagi',
+                mahasiswa: {
+                    nama: "Gabriella Henviani",
+                    NPM: "180709807",
+                    kelas: "PAW Kelas A",
+                }
+            },
+            methods: {
+                inisialisasi() {
+                    this.tebakan = 0;
+                    this.input = null;
+                    this.btnTebakLagi = 'Tebak lagi';
+                    this.generateAngka();
+                },
+                generateAngka() {
+                    this.angkaRandom = Math.floor(Math.random()*(this.max-this.min+1)+this.min);
+                    console.log(this.angkaRandom);
+                },
+                cekAngka() {
+                    if(this.input >= 1 && this.input <= 10) {
+                        this.tebakan++;
+                        this.disabled = 1;
+                        this.show = true;
+                        if(this.tebakan >= this.maxTebakan || this.input == this.angkaRandom) {
+                            this.btnTebakLagi = 'Main lagi';
+                        }
+                    }
+                    else {
+                        alert("Angka harus berada di antara 1-10!");
+                    }
+                },
+                tebakLagi() {
+                    if(this.btnTebakLagi == 'Main lagi') {
+                        this.inisialisasi();
+                    }
+                    this.disabled = 0;
+                    this.show = false;
+                }
+            },
+        });
+        app.inisialisasi();
+    </script>
+</body>
+</html>
